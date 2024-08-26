@@ -1,0 +1,59 @@
+version: '3.11'
+services:
+  app:
+   build: ./weather
+   volumes:
+    - ./weather:/app
+   ports:
+    - "5001:5001"
+   depends_on:
+    - db
+   environment:
+    MYSQL_HOST: ${MYSQL_HOST}
+    MYSQL_USER: ${MYSQL_USER}
+    MYSQL_PASSWORD: ${MYSQL_PASSWORD} 
+    DATABASE_NAME: ${MYSQL_DATABASE} 
+    FLASK_ENV: ${FLASK_ENV}
+    REDIS_HOST: ${REDIS_HOST}
+    REDIS_PORT: ${REDIS_PORT}
+    REDIS_PASSWORD: ${REDIS_PASSWORD}
+  
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - app
+
+  db:
+    image: mysql:latest
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - mysql:/var/lib/mysql
+      - ./weather/create.sql:/docker-entrypoint-initdb.d/create.sql
+
+  ngrok:
+    image: wernight/ngrok
+    ports:
+      - "4040:4040"
+    environment:
+      NGROK_AUTH: ${NGROK_AUTH}
+    command: /bin/sh -c 'ngrok config add-authtoken ${NGROK_AUTH} && ngrok http nginx:80'
+    depends_on:
+      - nginx
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+
+volumes:
+  mysql:

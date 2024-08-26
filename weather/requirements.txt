@@ -1,0 +1,25 @@
+# Flask
+Flask==3.0.3
+
+# DB
+Flask-SQLAlchemy==3.0.3
+pymysql==1.1.1
+cryptography
+sqlalchemy_utils
+
+# Redis
+redis
+
+# wsgi
+gunicorn==22.0.0
+
+# swagger
+setuptools==70.3.0
+flasgger==0.9.7b2
+
+# python
+python-dotenv
+
+# test
+pytest
+fakeredis
