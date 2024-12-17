@@ -57,7 +57,7 @@ jobs:
         (github.event.review.author_association == 'OWNER' || github.event.review.author_association == 'COLLABORATOR' || github.event.review.author_association == 'MEMBER')
         )
       )
-    runs-on: ebf-pod-ubuntu-2204@${{ github.run_id }}-auto-fix
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
